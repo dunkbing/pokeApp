@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon</title>
+</head>
+<body>
+    <img id="poke" src="https://pokeres.bastionbot.org/images/pokemon/1.png" alt="5">
+    <h3 id="pokeName"></h3>
+    <img style="display: none;" id="loading" src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e479628bfb3f44d42fa89fb4a9ebd5462899ef53da2&rid=giphy.gif" alt="">
+    <script>
+        const pokeImg = document.getElementById("poke")
+        const loadingImg = document.getElementById("loading")
+        pokeImg.addEventListener("click", async (e) => {
+            const pokeId = Math.floor(Math.random()*500)
+            pokeImg.style.display = "none"
+            loadingImg.style.display = "block"
+            try {
+                const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeId}/`)
+                const pokemon = await result.json()
+                document.getElementById("pokeName").innerText = pokemon.name
+                pokeImg.src = `https://pokeres.bastionbot.org/images/pokemon/${pokeId}.png`
+                pokeImg.style.display = "block"
+                loadingImg.style.display = "none"
+            } catch (error) {
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+</html>
