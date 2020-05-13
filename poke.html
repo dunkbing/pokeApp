@@ -79,7 +79,7 @@
 <body>
     <div id="container">
         <!-- <button id="challenge">challenge random opponent</button> -->
-        <input type="text">
+        <input type="text" id="searchTxt" placeholder="search by id or name">
         <button id="search">search</button>
         <div class="deck">
             <div id="challengeArea" class="card">
@@ -124,10 +124,7 @@
                     try {
                         const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeId}/`)
                         const pokemon = await result.json()
-                        pokeNameEle.innerText = pokemon.name
-                        document.getElementById("baseExp").innerText = "base experience: " + pokemon.base_experience
-                        document.getElementById("pokeType").innerText = ""
-                        pokemon.types.forEach(item => document.getElementById("pokeType").innerText += item.type.name + " | ")
+                        loadPokemon(pokemon)
                         if (localStorage[pokeId]) {
                             pokeNameEle.innerText = localStorage[pokeId].name + " acquired"
                         } else {
@@ -135,7 +132,7 @@
                             pokedecks--
                         }
                         currentPokemon = localStorage[pokeId]
-                        pokeImg.src = getImgById(pokeId)
+                        //pokeImg.src = getImgById(pokeId)
                         loading(false)
                         paginatePokes(1, pageSize)
                     } catch (err) {
@@ -174,6 +171,12 @@
                 paginatePokes(pageIndex, pageSize)
             })
 
+            document.getElementById("search").addEventListener("click", () => {
+                fetch(`https://pokeapi.co/api/v2/pokemon/${document.getElementById("searchTxt").value}/`)
+                    .then(res => res.json())
+                    .then(pokemon => loadPokemon(pokemon))
+            })
+
             function paginatePokes(pageIndex, pageSize) {
                 pokeList.innerHTML = null
                 Object.keys(localStorage).slice((pageIndex - 1) * pageSize, pageIndex * pageSize).forEach(key => {
@@ -199,6 +202,13 @@
                     })
                     pokeList.appendChild(pokeImgItem)
                 })
+            }
+            function loadPokemon(pokemon){
+                pokeImg.src = pokemon.sprites["front_default"]
+                pokeNameEle.innerText = pokemon.name
+                document.getElementById("baseExp").innerText = "base experience: " + pokemon.base_experience
+                document.getElementById("pokeType").innerText = ""
+                pokemon.types.forEach(item => document.getElementById("pokeType").innerText += item.type.name + " | ")
             }
 
             function loading(bool) {
