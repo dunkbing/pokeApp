@@ -175,6 +175,7 @@
                 fetch(`https://pokeapi.co/api/v2/pokemon/${document.getElementById("searchTxt").value}/`)
                     .then(res => res.json())
                     .then(pokemon => loadPokemon(pokemon))
+                    .catch(err => alert("not found"))
             })
 
             function paginatePokes(pageIndex, pageSize) {
